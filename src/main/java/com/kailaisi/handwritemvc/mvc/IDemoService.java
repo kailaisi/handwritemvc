@@ -1,4 +1,4 @@
-package com.kailaisi.handwritemvc.util;
+package com.kailaisi.handwritemvc.mvc;
 
 /**
  * 描述：

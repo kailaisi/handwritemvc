@@ -1,9 +1,9 @@
-package com.kailaisi.handwritemvc.util;
+package com.kailaisi.handwritemvc.mvc;
 
-import com.kailaisi.handwritemvc.annotation.KAutowired;
-import com.kailaisi.handwritemvc.annotation.KController;
-import com.kailaisi.handwritemvc.annotation.KRequestMapping;
-import com.kailaisi.handwritemvc.annotation.KRequestParam;
+import com.kailaisi.handwritemvc.ioc.annotation.KAutowired;
+import com.kailaisi.handwritemvc.ioc.annotation.KController;
+import com.kailaisi.handwritemvc.ioc.annotation.KRequestMapping;
+import com.kailaisi.handwritemvc.ioc.annotation.KRequestParam;
 
 /**
  * 描述：

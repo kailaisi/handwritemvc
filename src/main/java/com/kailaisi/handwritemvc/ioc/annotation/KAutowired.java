@@ -1,4 +1,4 @@
-package com.kailaisi.handwritemvc.annotation;
+package com.kailaisi.handwritemvc.ioc.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,10 +8,10 @@ import java.lang.annotation.Target;
 /**
  * 描述：
  * <p/>作者：wu
- * <br/>创建时间：2019/12/25 21:51
+ * <br/>创建时间：2019/12/25 21:50
  */
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE,ElementType.METHOD})
-public @interface KRequestMapping {
+public @interface KAutowired {
     String value() default "";
 }

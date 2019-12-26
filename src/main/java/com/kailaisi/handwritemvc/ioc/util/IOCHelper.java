@@ -1,36 +1,38 @@
-package com.kailaisi.handwritemvc.util;
+package com.kailaisi.handwritemvc.ioc.util;
 
-import com.kailaisi.handwritemvc.annotation.*;
-import jdk.nashorn.internal.parser.JSONParser;
+import com.kailaisi.handwritemvc.ioc.annotation.KAutowired;
+import com.kailaisi.handwritemvc.ioc.annotation.KController;
+import com.kailaisi.handwritemvc.ioc.annotation.KRequestMapping;
+import com.kailaisi.handwritemvc.ioc.annotation.KService;
+import com.kailaisi.handwritemvc.utils.ClassUtil;
+import com.kailaisi.handwritemvc.utils.StringUtil;
 
 import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * 描述：
  * <p/>作者：wu
- * <br/>创建时间：2019/12/25 21:57
+ * <br/>创建时间：2019/12/26 23:06
  */
-public class KDispatcherServlet extends HttpServlet {
-    private Properties p = new Properties();
-    private LinkedList<String> clazzName = new LinkedList<String>();
-    private Map<String, Object> ioc = new HashMap<String, Object>();
-    private Map<String, Method> handlerMapping = new HashMap<String, Method>();
+public final class IOCHelper {
+    private static final Map<String, Object> ioc = new HashMap<String, Object>();
+    private static final Properties p = new Properties();
+    private static final LinkedList<String> clazzName = new LinkedList<String>();
 
 
-    public void init(ServletConfig config) {
-        //加载xml的配置文件
+    private static final Map<String, Method> handlerMapping = new HashMap<String, Method>();
+
+    public IOCHelper(ServletConfig config){
         doLoadConfig(config.getInitParameter("contextConfigLocation"));
         //扫描相关类
         doScan(p.getProperty("scanPackage"));
@@ -43,73 +45,7 @@ public class KDispatcherServlet extends HttpServlet {
     }
 
 
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        this.doPost(req, resp);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try {
-            doDispatch(req, resp);
-        } catch (Exception e) {
-            resp.getWriter().write("500");
-        }
-    }
-
-    /**
-     * 拦截
-     * @param req
-     * @param resp
-     * @throws Exception
-     */
-    private void doDispatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        boolean json=false;
-        if (this.handlerMapping.isEmpty()) {
-            throw new IllegalArgumentException("地址错误");
-        }
-        String uri = req.getRequestURI();
-        String contextPath = req.getContextPath();
-        String url = uri.replace(contextPath, "").replaceAll("//", "/");
-        if (!this.handlerMapping.containsKey(url)) {
-            resp.getWriter().write("404 ,url not found!");
-        }
-        Map<String, String[]> params = req.getParameterMap();
-        Method method = handlerMapping.get(url);
-        if(method.isAnnotationPresent(KResponsBody.class)|| method.getDeclaringClass().isAnnotationPresent(KResponsBody.class)){
-            json=true;
-        }
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        Object[] objects = new Object[parameterTypes.length];
-        for (int i = 0; i < parameterTypes.length; i++) {
-            Class<?> type = parameterTypes[i];
-            if (type == HttpServletRequest.class) {
-                objects[i] = req;
-            } else if (type == HttpServletResponse.class) {
-                objects[i] = resp;
-            } else if (type == String.class) {
-                for (Map.Entry<String, String[]> entry : params.entrySet()) {
-                    String value = Arrays.toString(entry.getValue()).replaceAll("\\[|\\]", "")
-                            .replaceAll("\\s", "");
-                    objects[i] = value;
-                }
-            }
-        }
-        try {
-            String bean = lowerFirstCase(method.getDeclaringClass().getSimpleName());
-            Object o = ioc.get(bean);
-            Object o1 = method.invoke(o, objects);
-            if(json){
-                resp.getWriter().write(o1.toString());
-            }
-            resp.getWriter().write(o1.toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private void initHandlerMapping() {
+    private static void initHandlerMapping() {
         if (ioc.isEmpty()) {
             return;
         }
@@ -130,7 +66,7 @@ public class KDispatcherServlet extends HttpServlet {
         }
     }
 
-    private void doAutowired() {
+    private static void doAutowired() {
         if (ioc.isEmpty()) {
             return;
         }
@@ -155,7 +91,7 @@ public class KDispatcherServlet extends HttpServlet {
         }
     }
 
-    private void doInstance() {
+    private static void doInstance() {
         if (clazzName.size() == 0) {
             return;
         }
@@ -163,7 +99,7 @@ public class KDispatcherServlet extends HttpServlet {
             for (String s : clazzName) {
                 Class<?> aClass = Class.forName(s);
                 if (aClass.isAnnotationPresent(KController.class)) {
-                    String beanName = lowerFirstCase(aClass.getSimpleName());
+                    String beanName = StringUtil.lowerFirstCase(aClass.getSimpleName());
                     ioc.put(beanName, aClass.newInstance());
                 } else if (aClass.isAnnotationPresent(KService.class)) {
                     KService kService = aClass.getAnnotation(KService.class);
@@ -188,15 +124,11 @@ public class KDispatcherServlet extends HttpServlet {
 
     }
 
-    private String lowerFirstCase(String str) {
-        char[] array = str.toCharArray();
-        array[0] += 32;
-        return String.valueOf(array);
-    }
 
 
-    private void doScan(String scanPackage) {
-        URL url = getClass().getClassLoader().getResource("/" + scanPackage.replaceAll("\\.", "/"));
+
+    private static void doScan(String scanPackage) {
+        URL url = ClassUtil.getClassLoader().getResource("/" + scanPackage.replaceAll("\\.", "/"));
         File dir = new File(url.getFile());
         for (File file : dir.listFiles()) {
             if (file.isDirectory()) {
@@ -207,10 +139,10 @@ public class KDispatcherServlet extends HttpServlet {
         }
     }
 
-    private void doLoadConfig(String location) {
+    private static void doLoadConfig(String location) {
         InputStream inputStream = null;
         try {
-            inputStream = getClass().getClassLoader().getResourceAsStream(location);
+            inputStream = ClassUtil.getClassLoader().getResourceAsStream(location);
             p.load(inputStream);
         } catch (IOException e) {
             e.printStackTrace();
@@ -223,5 +155,19 @@ public class KDispatcherServlet extends HttpServlet {
         }
     }
 
+    public static Object get(String bean) {
+        return ioc.get(bean);
+    }
 
+    public static Map<String, Object> getIoc() {
+        return ioc;
+    }
+
+    public static Map<String, Method> getHandlerMapping() {
+        return handlerMapping;
+    }
+
+    public static void setBean(String targetClass, Object proxy) {
+        ioc.put(targetClass,proxy);
+    }
 }

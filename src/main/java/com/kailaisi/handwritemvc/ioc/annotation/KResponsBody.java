@@ -1,4 +1,4 @@
-package com.kailaisi.handwritemvc.annotation;
+package com.kailaisi.handwritemvc.ioc.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * <br/>创建时间：2019/12/25 21:51
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface KRequestParam {
+@Target({ElementType.TYPE,ElementType.METHOD})
+public @interface KResponsBody {
     String value() default "";
 }

@@ -1,6 +1,6 @@
-package com.kailaisi.handwritemvc.util;
+package com.kailaisi.handwritemvc.mvc;
 
-import com.kailaisi.handwritemvc.annotation.KService;
+import com.kailaisi.handwritemvc.ioc.annotation.KService;
 
 /**
  * 描述：

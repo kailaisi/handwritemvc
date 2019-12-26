@@ -7,7 +7,7 @@
     <display-name>K Web Application</display-name>
     <servlet>
         <servlet-name>kmvc</servlet-name>
-        <servlet-class>com.kailaisi.handwritemvc.util.KDispatcherServlet</servlet-class>
+        <servlet-class>com.kailaisi.handwritemvc.ioc.util.KDispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>application.properties</param-value>
