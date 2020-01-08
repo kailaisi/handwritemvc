@@ -12,5 +12,5 @@ public interface KProxy {
      * @return
      * @throws Throwable
      */
-    Object doProxy(KProxyChain chain) throws  Throwable;
+    Object doProxy(KProxyChain chain);
 }

@@ -1,7 +1,6 @@
 package com.kailaisi.handwritemvc.ioc.util;
 
 import com.kailaisi.handwritemvc.ioc.annotation.KResponsBody;
-import com.kailaisi.handwritemvc.utils.ClassUtil;
 import com.kailaisi.handwritemvc.utils.StringUtil;
 
 import javax.servlet.ServletConfig;
@@ -11,8 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 描述：
@@ -21,7 +19,7 @@ import java.util.Map;
  */
 public class KDispatcherServlet extends HttpServlet {
     public void init(ServletConfig config) {
-        new IOCHelper(config);
+        IOCHelper.init(config);
     }
 
 

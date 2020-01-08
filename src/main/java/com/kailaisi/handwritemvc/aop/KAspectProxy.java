@@ -9,7 +9,7 @@ import java.lang.reflect.Method;
  */
 public abstract class KAspectProxy implements KProxy {
     @Override
-    public Object doProxy(KProxyChain chain) throws  Throwable{
+    public Object doProxy(KProxyChain chain){
         Object result=null;
         Class<?> cls = chain.getTargetClass();
         Method method = chain.getTargetMethod();
@@ -25,7 +25,6 @@ public abstract class KAspectProxy implements KProxy {
             }
         }catch (Exception e){
             error(method,params,e);
-            throw e;
         }finally {
             end();
         }

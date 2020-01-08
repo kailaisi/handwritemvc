@@ -14,9 +14,6 @@ import java.util.Properties;
  * <br/>创建时间：2019/12/26 23:10
  */
 public final class PropsUtil {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PropsUtil.class);
-
     /**
      * 加载属性文件
      */
@@ -31,13 +28,11 @@ public final class PropsUtil {
             props = new Properties();
             props.load(is);
         } catch (IOException e) {
-            LOGGER.error("load properties file failure", e);
         } finally {
             if (is != null) {
                 try {
                     is.close();
                 } catch (IOException e) {
-                    LOGGER.error("close input stream failure", e);
                 }
             }
         }

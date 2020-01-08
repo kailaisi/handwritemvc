@@ -1,7 +1,6 @@
 package com.kailaisi.handwritemvc.aop;
 
 import com.kailaisi.handwritemvc.aop.annotation.KAspect;
-import com.kailaisi.handwritemvc.utils.PropsUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

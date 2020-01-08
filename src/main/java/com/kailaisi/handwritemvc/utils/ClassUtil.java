@@ -1,9 +1,7 @@
 package com.kailaisi.handwritemvc.utils;
 
-import com.kailaisi.handwritemvc.aop.KAspectProxy;
 import com.kailaisi.handwritemvc.ioc.util.IOCHelper;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -19,10 +17,10 @@ public final class ClassUtil {
     }
 
     public static Set<Class<?>> getClassSetBySuper(Class<?> superClass) {
-        Set<Class<?>> set=new HashSet<Class<?>>();
+        Set<Class<?>> set = new HashSet<Class<?>>();
         Map<String, Object> ioc = IOCHelper.getIoc();
         for (Map.Entry<String, Object> entry : ioc.entrySet()) {
-            if (entry.getValue().getClass().isAssignableFrom(superClass)||entry.getValue().getClass()==superClass) {
+            if (entry.getValue().getClass().isAssignableFrom(superClass) || entry.getValue().getClass() == superClass) {
                 set.add(entry.getValue().getClass());
             }
         }
@@ -30,7 +28,7 @@ public final class ClassUtil {
     }
 
     public static Set<Class<?>> getClassSet(String pkg) {
-        Set<Class<?>> set=new HashSet<Class<?>>();
+        Set<Class<?>> set = new HashSet<Class<?>>();
         for (Map.Entry<String, Object> entry : IOCHelper.getIoc().entrySet()) {
             if (entry.getKey().startsWith(pkg)) {
                 set.add(entry.getValue().getClass());

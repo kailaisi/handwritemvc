@@ -12,43 +12,49 @@ import java.util.List;
  */
 public class KProxyChain {
     private Class<?> targetClass;
+    private MethodProxy methodProxy;
     private Method targetMethod;
     private Object[] methodParams;
+    private List<KProxy> proxyList;
+    private static Integer proxyExecuteIndex = 0;
 
     public KProxyChain(Class<?> targetClass, Method targetMethod, MethodProxy methodProxy, Object[] methodParams, List<KProxy> proxyList) {
-
+        this.targetClass = targetClass;
+        this.methodProxy = methodProxy;
+        this.targetMethod = targetMethod;
+        this.methodParams = methodParams;
+        this.proxyList = proxyList;
     }
 
     public Class<?> getTargetClass() {
         return targetClass;
     }
 
-    public void setTargetClass(Class<?> targetClass) {
-        this.targetClass = targetClass;
-    }
-
     public Method getTargetMethod() {
         return targetMethod;
     }
 
-    public void setTargetMethod(Method targetMethod) {
-        this.targetMethod = targetMethod;
-    }
 
     public Object[] getMethodParams() {
-
         return methodParams;
-    }
-
-    public void setMethodParams(Object[] methodParams) {
-        this.methodParams = methodParams;
     }
 
     /**
      * 递归调用
+     *
      * @return
      */
     public Object doProxyChain() {
-        return null;
+        Object result = null;
+        if (proxyExecuteIndex < proxyList.size()) {
+            result = proxyList.get(proxyExecuteIndex++).doProxy(this);
+        } else {
+            try {
+                result = methodProxy.invoke(targetClass, methodParams);
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            }
+        }
+        return result;
     }
 }

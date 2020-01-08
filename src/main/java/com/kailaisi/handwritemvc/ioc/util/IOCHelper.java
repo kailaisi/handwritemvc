@@ -32,7 +32,7 @@ public final class IOCHelper {
 
     private static final Map<String, Method> handlerMapping = new HashMap<String, Method>();
 
-    public IOCHelper(ServletConfig config){
+    public static void init(ServletConfig config){
         doLoadConfig(config.getInitParameter("contextConfigLocation"));
         //扫描相关类
         doScan(p.getProperty("scanPackage"));
@@ -43,7 +43,6 @@ public final class IOCHelper {
         //构造HandlerMapping，将请求的url地址和对应的方法进行一一对应
         initHandlerMapping();
     }
-
 
     private static void initHandlerMapping() {
         if (ioc.isEmpty()) {
@@ -125,8 +124,6 @@ public final class IOCHelper {
     }
 
 
-
-
     private static void doScan(String scanPackage) {
         URL url = ClassUtil.getClassLoader().getResource("/" + scanPackage.replaceAll("\\.", "/"));
         File dir = new File(url.getFile());
@@ -168,6 +165,6 @@ public final class IOCHelper {
     }
 
     public static void setBean(String targetClass, Object proxy) {
-        ioc.put(targetClass,proxy);
+        ioc.put(targetClass, proxy);
     }
 }
